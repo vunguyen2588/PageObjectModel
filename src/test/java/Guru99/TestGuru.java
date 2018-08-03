@@ -17,7 +17,7 @@ public class TestGuru {
 	public String customerID;
 	public NewAccount objNewAccount;
 	public String accountID;
-	public NewDeposit objNewDeposit;
+	public Deposit objNewDeposit;
 	public String strTime; 
 	@BeforeMethod
 	public void setup() {
@@ -63,7 +63,7 @@ public class TestGuru {
 		objLogin = new Login(driver);
 		objNewCustomer = new NewCustomer(driver);
 		objNewAccount = new NewAccount(driver);
-		objNewDeposit = new NewDeposit(driver);
+		objNewDeposit = new Deposit(driver);
 
 		objLogin.loginToGuru("mngr146189", "hUtUbUp");
 		objNewDeposit.clickDeposit();

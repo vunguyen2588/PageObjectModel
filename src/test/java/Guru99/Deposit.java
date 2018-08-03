@@ -3,7 +3,7 @@ package Guru99;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class NewDeposit {
+public class Deposit {
 	WebDriver driver;
 	By accountNo = By.name("accountno");
 	By ammount = By.name("ammount");
@@ -12,7 +12,7 @@ public class NewDeposit {
 	By successMes = By.xpath("//p[@class='heading3']");
 	By lnkDeposit = By.xpath("//a[text()='Deposit']");
 
-	public NewDeposit(WebDriver driver) {
+	public Deposit(WebDriver driver) {
 		this.driver = driver;
 	}
 

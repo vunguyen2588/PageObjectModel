@@ -17,15 +17,16 @@ public class TestGuru {
 	public String customerID;
 	public NewAccount objNewAccount;
 	public String accountID;
-	public Deposit objNewDeposit;
+	public Deposit objDeposit;
 	public String strTime; 
+	
 	@BeforeMethod
 	public void setup() {
 		Date d = new Date();
 	    SimpleDateFormat form = new SimpleDateFormat("ddhhmmss");
 	    strTime = form.format(d);
 	    
-	    System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+ "\\Driver\\chromedriver.exe");
+	    System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+ "\\driver\\chromedriver.exe");
 		driver = new ChromeDriver();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.get("http://demo.guru99.com/V4/");
@@ -63,11 +64,11 @@ public class TestGuru {
 		objLogin = new Login(driver);
 		objNewCustomer = new NewCustomer(driver);
 		objNewAccount = new NewAccount(driver);
-		objNewDeposit = new Deposit(driver);
+		objDeposit = new Deposit(driver);
 
 		objLogin.loginToGuru("mngr146189", "hUtUbUp");
-		objNewDeposit.clickDeposit();
-		objNewDeposit.createDeposit(accountID, "2000", "abc");
+		objDeposit.clickDeposit();
+		objDeposit.createDeposit(accountID, "2000", "abc");
 		Assert.assertTrue(
 				objNewAccount.getSuccessMessage().contains("Transaction details of Deposit for Account " + accountID));
 	}

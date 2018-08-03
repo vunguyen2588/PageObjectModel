@@ -7,7 +7,7 @@
 
 2. 	How to run the test to verify three functions:
 	- Open the command line
-	- Navigate to the folder HomeCredit
+	- Navigate to the folder Guru99
 	- Install the command: mvn install
 
 3. 	How to check the reports:

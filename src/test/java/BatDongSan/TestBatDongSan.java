@@ -71,7 +71,7 @@ public class TestBatDongSan {
 		List<WebElement> record;
 		int iStop = 0;
 		
-		for (int iUrl = 1; iUrl <= 100; iUrl++) {
+		for (int iUrl = 1; iUrl <= 10000; iUrl++) {
 			if(iStop > 0) {
 				break;
 			} else {
@@ -81,12 +81,16 @@ public class TestBatDongSan {
 						break;
 					} else {
 						record = driver.findElements(By.xpath("//div[@class='p-title']//a"));
-						record.get(i).click();
-						new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
-						System.out.println(driver.getCurrentUrl());
-						iStop = writeToDatabase(transtype);
-						driver.navigate().back();
-						new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+						if(record.size() > 0) {
+							record.get(i).click();
+							new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+							System.out.println(driver.getCurrentUrl());
+							iStop = writeToDatabase(transtype);
+							driver.navigate().back();
+							new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+						} else {
+							iStop = 1;
+						}
 					}
 				}
 			}

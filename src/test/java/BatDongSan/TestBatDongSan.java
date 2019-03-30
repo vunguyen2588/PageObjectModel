@@ -50,7 +50,7 @@ public class TestBatDongSan {
 //		String dbURL = localhost:1433;databaseName=Company
 //		Connection conn = DriverManager.getConnection(dbURL, "Dot_Crawler",
 //				"$serv1c3cr4wl3r%");
-		Connection conn = DriverManager.getConnection("localhost:1433;databaseName=DBCRAWLER", "Dot_Crawler", "$serv1c3cr4wl3r%");
+		Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=DBCRAWLER", "Dot_Crawler", "$serv1c3cr4wl3r%");
 		String SPUrl = "EXEC [dbo].[Transtype_Sel] ?,?";
 		PreparedStatement ps = conn.prepareStatement(SPUrl);
 		ps.setEscapeProcessing(true);

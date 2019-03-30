@@ -45,7 +45,8 @@ public class TestBatDongSan {
 		String bds = "bds";
 
 		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-		String dbURL = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433";
+//		String dbURL = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433";
+		String dbURL = "jdbc:sqlserver://localhost";
 		Connection conn = DriverManager.getConnection(dbURL, "Dot_Crawler",
 				"$serv1c3cr4wl3r%");
 

@@ -32,7 +32,7 @@ public class TestBatDongSan {
 	@Before
 	public void setup() {
 		ChromeOptions chromeOptions= new ChromeOptions();
-		chromeOptions.setBinary("C:\\Users\\Deployer\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe");
+		chromeOptions.setBinary("C:\Users\Administrator\AppData\Local\Google\Chrome\Application\chrome.exe");
 		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\driver\\chromedriver.exe");
 		driver = new ChromeDriver(chromeOptions);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);

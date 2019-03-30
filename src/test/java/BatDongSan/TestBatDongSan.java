@@ -124,11 +124,12 @@ public class TestBatDongSan {
 		String transCode = getTransactionCode();
 		String url = getURL();
 		
-		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-		String dbURL = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433";
-		Connection conn = DriverManager.getConnection(dbURL, "Dot_Crawler",
-				"$serv1c3cr4wl3r%");
-
+//		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+//		String dbURL = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433";
+//		Connection conn = DriverManager.getConnection(dbURL, "Dot_Crawler",
+//				"$serv1c3cr4wl3r%");
+		Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=DBCRAWLER", "Dot_Crawler", "$serv1c3cr4wl3r%");
+		
 		try {
 			CallableStatement cs = conn
 					.prepareCall("{call BDS_TransImport_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");

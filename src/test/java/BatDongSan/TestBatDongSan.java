@@ -32,7 +32,7 @@ public class TestBatDongSan {
 	@Before
 	public void setup() {
 		ChromeOptions chromeOptions= new ChromeOptions();
-		chromeOptions.setBinary("C:\\Users\\Administrator\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe");
+		chromeOptions.setBinary("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe");
 		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\driver\\chromedriver.exe");
 		driver = new ChromeDriver(chromeOptions);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -141,9 +141,12 @@ public class TestBatDongSan {
 			cs.setQueryTimeout(5);
 			cs.setInt(1, transtype);
 			cs.setString(2, title);
-			cs.setString(3, getAddress().get(0));
-			cs.setString(4, getAddress().get(1));
-			cs.setString(5, getAddress().get(2));
+			
+			List<String> diaChi = getAddress();
+			cs.setString(3, diaChi.get(0));
+			cs.setString(4, diaChi.get(1));
+			cs.setString(5, diaChi.get(2));
+			
 			if(!getPrice().get(0).contains("Th")) {
 				cs.setFloat(6, Float.parseFloat(getPrice().get(0)));
 				cs.setString(7, getPrice().get(1));
@@ -226,12 +229,25 @@ public class TestBatDongSan {
 
 	// Getting city, district and address detail
 	private List<String> getAddress() {
+		String quan = null;
+		String thanhPho = null;
+		String chiTietDiaChi = null;
+		List<String> addresses = null;
+		
+		String diaChiTren = driver.findElement(By.xpath("//span[contains(@class, 'diadiem-title')]")).getText();
+		String khuVuc = driver.findElement(By.xpath("//span[contains(@class, 'diadiem-title')]/b")).getText();
+		String diaChiLink = driver.findElement(By.xpath("//span[contains(@class, 'diadiem-title')]/a")).getText();
+		String quanThanhPho = diaChiTren.replace(khuVuc, "").replace(diaChiLink, "");
+		List<String> toanBoDiaChiTren = Arrays.asList(quanThanhPho.split("- "));
+		quan = toanBoDiaChiTren.get(1).trim();
+		thanhPho = toanBoDiaChiTren.get(2).trim();
+				
+		
 		String allAddress = driver.findElement(By.xpath("(//div[@class='table-detail']/div[2]/div[@class='right'])[1]")).getText();
-		List<String> addressList = Arrays.asList(allAddress.split(", "));
-		String city = addressList.get(addressList.size()-1);
-		String district = addressList.get(addressList.size()-2);
-		String addressDetail = allAddress.replace(city,"").replace(district,"").replace(", ,","").trim();
-		List<String> addresses = Arrays.asList(city, district, addressDetail) ;
+		chiTietDiaChi = allAddress.replaceAll(quan,"").replaceAll(thanhPho,"").replaceAll(", ,","").trim();
+		System.out.println(chiTietDiaChi);
+		addresses = Arrays.asList(thanhPho, quan, chiTietDiaChi) ;
+		System.out.println(addresses);
 		return addresses;
 	}
 

@@ -35,12 +35,6 @@ public class TestBatDongSan {
 	String chromeServer = "C:\\Users\\Administrator\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe";
 	Connection conn;
 	
-	private Connection getConnection() throws Exception {
-		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-		Connection conn = DriverManager.getConnection(jdbc, userName, passWord);
-		return conn;
-	}
-	
 	@Before
 	public void setup() throws Exception {
 		conn = getConnection();
@@ -56,6 +50,7 @@ public class TestBatDongSan {
 		driver.quit();
 	}
 
+	// ==============================================================================================================================	
 	@Test
 	public void getAllPage() throws Exception {
 		String transtype = "transtype";
@@ -82,8 +77,14 @@ public class TestBatDongSan {
 		List<WebElement> record;
 		int iStop = 0;
 		
-		for (int iUrl = 1; iUrl <= 10000; iUrl++) {
+		for (int iUrl = 2320; iUrl <= 10000; iUrl++) {
 			if(iStop > 0) {
+				CallableStatement cs = conn.prepareCall("{call BDS_TaskProcessUpd(?,?)}");
+				cs.setEscapeProcessing(true);
+				cs.setQueryTimeout(5);
+				cs.setInt(1, transtype);
+				cs.setString(2, "bds");
+				cs.executeUpdate();
 				break;
 			} else {
 				driver.get(url + "/p" + iUrl);
@@ -180,6 +181,15 @@ public class TestBatDongSan {
 		}
 	}
 
+	// ==============================================================================================================================	
+	// Getting data unit
+	// Getting connection
+	private Connection getConnection() throws Exception {
+		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		Connection conn = DriverManager.getConnection(jdbc, userName, passWord);
+		return conn;
+	}
+		
 	// 	Getting direction
 	private String getDirection() {
 		String direction = null;

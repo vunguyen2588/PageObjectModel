@@ -171,7 +171,7 @@ public class TestBatDongSan {
 				return 100;
 			}
 		} else {
-			return 100;
+			return 0;
 		}
 	}
 

@@ -77,18 +77,12 @@ public class TestBatDongSan {
 		List<WebElement> record;
 		int iStop = 0;
 		
-		for (int iUrl = 2320; iUrl <= 10000; iUrl++) {
+		for (int iUrl = 2313; iUrl <= 10000; iUrl++) {
 			if(iStop > 0) {
-				CallableStatement cs = conn.prepareCall("{call BDS_TaskProcessUpd(?,?)}");
-				cs.setEscapeProcessing(true);
-				cs.setQueryTimeout(5);
-				cs.setInt(1, transtype);
-				cs.setString(2, "bds");
-				cs.executeUpdate();
 				break;
 			} else {
 				driver.get(url + "/p" + iUrl);
-				for (int i = 0; i < 20; i++) {
+				for (int i = 15; i < 20; i++) {
 					if(iStop > 0) {
 						break;
 					} else {
@@ -106,7 +100,18 @@ public class TestBatDongSan {
 								iStop = 1;
 							}
 						} else {
-							Thread.sleep(5000);
+							List<WebElement> notFoundEles = driver.findElements(By.xpath("//div[@id='LeftMainContent__productSearchResult_pnlNotFound']"));
+							if(notFoundEles.size()==1) {
+								CallableStatement cs = conn.prepareCall("{call BDS_TaskProcessUpd(?,?)}");
+								cs.setEscapeProcessing(true);
+								cs.setQueryTimeout(5);
+								cs.setInt(1, transtype);
+								cs.setString(2, "bds");
+								cs.executeUpdate();
+								System.out.println("End reading !");
+							} else {
+								Thread.sleep(5000);	
+							}
 						}
 					}
 				}

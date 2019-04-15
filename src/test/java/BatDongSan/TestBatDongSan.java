@@ -32,8 +32,8 @@ public class TestBatDongSan {
 	@Before
 	public void setup() {
 		ChromeOptions chromeOptions= new ChromeOptions();
-//		chromeOptions.setBinary("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe");
-		chromeOptions.setBinary("C:\\Users\\Administrator\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe");
+		chromeOptions.setBinary("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe");
+//		chromeOptions.setBinary("C:\\Users\\Administrator\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe");
 		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\driver\\chromedriver.exe");
 		driver = new ChromeDriver(chromeOptions);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -108,11 +108,6 @@ public class TestBatDongSan {
 	// Get detail information
 	private int writeToDatabase(int transtype) throws Exception {
 		String title = getTitle();
-//		String city = null;
-//		String district = null;
-//		String addressDetails = null;
-//		float price = 0;
-//		String unitPrice = null;
 		float area = getArea();
 		String transDesc = getTransactionDescription();
 		String direction = getDirection();
@@ -124,57 +119,48 @@ public class TestBatDongSan {
 		String phoneContact = getPhoneContact();
 		String email = getEmail();
 		String addressContact = getAddressContact();
-//		String transDate = getTransactionDate();
 		Date importDate = null;
 		String transCode = getTransactionCode();
-		String url = getURL();
-		
-//		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-//		String dbURL = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433";
-//		Connection conn = DriverManager.getConnection(dbURL, "Dot_Crawler",
-//				"$serv1c3cr4wl3r%");
+		String url = getURL();		
 		Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=DBCRAWLER", "Dot_Crawler", "$serv1c3cr4wl3r%");
 		
 		try {
-			CallableStatement cs = conn
-					.prepareCall("{call BDS_TransImport_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			CallableStatement cs = conn.prepareCall("{call BDS_TransImport_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			cs.setEscapeProcessing(true);
 			cs.setQueryTimeout(5);
+			
 			cs.setInt(1, transtype);
 			cs.setString(2, title);
-			
-			List<String> diaChi = getAddress();
-			cs.setString(3, diaChi.get(0));
-			cs.setString(4, diaChi.get(1));
-			cs.setString(5, diaChi.get(2));
+			cs.setString(3, getAddress());
 			
 			if(!getPrice().get(0).contains("Th")) {
-				cs.setFloat(6, Float.parseFloat(getPrice().get(0)));
-				cs.setString(7, getPrice().get(1));
+				cs.setFloat(4, Float.parseFloat(getPrice().get(0)));
+				cs.setString(5, getPrice().get(1));
 			} else {
-				cs.setFloat(6, 0);
-				cs.setString(7, null);
+				cs.setFloat(4, 0);
+				cs.setString(5, null);
 			}
 			
-			cs.setFloat(8, area);
-			cs.setString(9, transDesc);
-			cs.setString(10, direction);
-			cs.setString(11, balcony);
-			cs.setInt(12, bedRoom);
-			cs.setInt(13, toilet);
-			cs.setString(14, furniture);
-			cs.setString(15, contactPerson);
-			cs.setString(16, phoneContact);
-			cs.setString(17, email);
-			cs.setString(18, addressContact);
-			cs.setTimestamp(19, getTransactionDate());
-			cs.setDate(20, (java.sql.Date) importDate);
-			cs.setString(21, transCode);
-			cs.setString(22, url);
-			cs.registerOutParameter(23, java.sql.Types.INTEGER);
+			cs.setFloat(6, 6);
+			cs.setString(7, transDesc);
+			cs.setString(8, direction);
+			cs.setString(9, balcony);
+			cs.setInt(10, bedRoom);
+			cs.setInt(11, toilet);
+			cs.setString(12, furniture);
+			cs.setString(13, contactPerson);
+			cs.setString(14, phoneContact);
+			cs.setString(15, email);
+			cs.setString(16, addressContact);
+			cs.setTimestamp(17, getTransactionDate());
+			cs.setDate(18, (java.sql.Date) importDate);
+			cs.setString(19, transCode);
+			cs.setString(20, url);
+			cs.registerOutParameter(21, java.sql.Types.INTEGER);
+			
 			cs.executeUpdate();
-			int iStop = Integer.parseInt(cs.getString(23));
-//			 System.out.println("==============" + cs.getString(23));
+			int iStop = Integer.parseInt(cs.getString(21));
+
 			return iStop;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -228,32 +214,10 @@ public class TestBatDongSan {
 		return title;
 	}
 
-	// Getting city, district and address detail
-	private List<String> getAddress() {
-		String quan = null;
-		String removeQuan = null;
-		String removeHuyen = null;
-		String thanhPho = null;
-		String chiTietDiaChi = null;
-		List<String> addresses = null;
-		
-		String diaChiTren = driver.findElement(By.xpath("//span[contains(@class, 'diadiem-title')]")).getText();
-		String khuVuc = driver.findElement(By.xpath("//span[contains(@class, 'diadiem-title')]/b")).getText();
-		String diaChiLink = driver.findElement(By.xpath("//span[contains(@class, 'diadiem-title')]/a")).getText();
-		String quanThanhPho = diaChiTren.replace(khuVuc, "").replace(diaChiLink, "");
-		List<String> toanBoDiaChiTren = Arrays.asList(quanThanhPho.split("- "));
-		quan = toanBoDiaChiTren.get(1).trim();
-		removeQuan = quan.replace("Quận", "");
-		removeHuyen = quan.replace("Huyện", "");
-		thanhPho = toanBoDiaChiTren.get(2).trim();
-				
-		
-		String allAddress = driver.findElement(By.xpath("(//div[@class='table-detail']/div[2]/div[@class='right'])[1]")).getText();
-		chiTietDiaChi = allAddress.replaceAll(quan,"").replaceAll(thanhPho,"").replaceAll(removeQuan,"").replaceAll(removeHuyen,"").replaceAll(",,","").trim();
-//		System.out.println(chiTietDiaChi);
-		addresses = Arrays.asList(thanhPho, quan, chiTietDiaChi) ;
-		System.out.println(addresses);
-		return addresses;
+	// Getting address detail
+	private String getAddress() {
+		String address = driver.findElement(By.xpath("(//div[@class='table-detail']/div[2]/div[@class='right'])[1]")).getText();
+		return address;
 	}
 
 	// Getting email
@@ -321,7 +285,6 @@ public class TestBatDongSan {
 		if(driver.findElements(By.xpath("//div[@id='LeftMainContent__productDetail_contactName']/div[@class='right']")).size()==1) {
 			contactPerson = driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_contactName']/div[@class='right']")).getText();
 		}
-//		// System.out.println(contactPerson);
 		return contactPerson;
 	}
 

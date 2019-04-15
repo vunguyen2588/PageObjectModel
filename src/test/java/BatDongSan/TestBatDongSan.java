@@ -141,7 +141,7 @@ public class TestBatDongSan {
 				cs.setString(5, null);
 			}
 			
-			cs.setFloat(6, 6);
+			cs.setFloat(6, area);
 			cs.setString(7, transDesc);
 			cs.setString(8, direction);
 			cs.setString(9, balcony);

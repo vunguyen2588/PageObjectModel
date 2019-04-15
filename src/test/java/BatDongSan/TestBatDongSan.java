@@ -91,16 +91,21 @@ public class TestBatDongSan {
 					if(iStop > 0) {
 						break;
 					} else {
-						record = driver.findElements(By.xpath("//div[@class='p-title']//a"));
-						if(record.size() > 0) {
-							record.get(i).click();
-							new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
-							System.out.println(driver.getCurrentUrl());
-							iStop = writeToDatabase(transtype);
-							driver.navigate().back();
-							new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+						List<WebElement> titleEles = driver.findElements(By.xpath("//div[@class='p-title']//a"));
+						if(titleEles.size()!=0) {
+							record = driver.findElements(By.xpath("//div[@class='p-title']//a"));
+							if(record.size() > 0) {
+								record.get(i).click();
+								new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+								System.out.println(driver.getCurrentUrl());
+								iStop = writeToDatabase(transtype);
+								driver.navigate().back();
+								new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+							} else {
+								iStop = 1;
+							}
 						} else {
-							iStop = 1;
+							Thread.sleep(5000);
 						}
 					}
 				}

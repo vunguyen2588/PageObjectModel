@@ -248,9 +248,9 @@ public class TestBatDongSan {
 		
 		String allAddress = driver.findElement(By.xpath("(//div[@class='table-detail']/div[2]/div[@class='right'])[1]")).getText();
 		chiTietDiaChi = allAddress.replaceAll(quan,"").replaceAll(thanhPho,"").replaceAll(",, ,","").replaceAll(removeQuan,"").trim();
-		System.out.println(chiTietDiaChi);
+//		System.out.println(chiTietDiaChi);
 		addresses = Arrays.asList(thanhPho, quan, chiTietDiaChi) ;
-		System.out.println(addresses);
+//		System.out.println(addresses);
 		return addresses;
 	}
 

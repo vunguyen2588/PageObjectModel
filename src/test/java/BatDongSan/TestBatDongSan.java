@@ -77,7 +77,7 @@ public class TestBatDongSan {
 		List<WebElement> record;
 		int iStop = 0;
 		
-		for (int iUrl = 2313; iUrl <= 10000; iUrl++) {
+		for (int iUrl = 2311; iUrl <= 10000; iUrl++) {
 			if(iStop > 0) {
 				break;
 			} else {

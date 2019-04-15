@@ -232,6 +232,7 @@ public class TestBatDongSan {
 	private List<String> getAddress() {
 		String quan = null;
 		String removeQuan = null;
+		String removeHuyen = null;
 		String thanhPho = null;
 		String chiTietDiaChi = null;
 		List<String> addresses = null;
@@ -243,11 +244,12 @@ public class TestBatDongSan {
 		List<String> toanBoDiaChiTren = Arrays.asList(quanThanhPho.split("- "));
 		quan = toanBoDiaChiTren.get(1).trim();
 		removeQuan = quan.replace("Quận", "");
+		removeHuyen = quan.replace("Huyện", "");
 		thanhPho = toanBoDiaChiTren.get(2).trim();
 				
 		
 		String allAddress = driver.findElement(By.xpath("(//div[@class='table-detail']/div[2]/div[@class='right'])[1]")).getText();
-		chiTietDiaChi = allAddress.replaceAll(quan,"").replaceAll(thanhPho,"").replaceAll(",, ,","").replaceAll(removeQuan,"").trim();
+		chiTietDiaChi = allAddress.replaceAll(quan,"").replaceAll(thanhPho,"").replaceAll(",, ,","").replaceAll(removeQuan,"").replaceAll(removeHuyen,"").trim();
 //		System.out.println(chiTietDiaChi);
 		addresses = Arrays.asList(thanhPho, quan, chiTietDiaChi) ;
 //		System.out.println(addresses);

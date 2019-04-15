@@ -27,13 +27,25 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class TestBatDongSan {
-	public WebDriver driver;
-
+	WebDriver driver;
+	String jdbc = "jdbc:sqlserver://103.101.163.224:1433;databaseName=DBCRAWLER";
+	String userName = "Dot_Crawler";
+	String passWord = "$serv1c3cr4wl3r%";
+	String chromeLocal = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+	String chromeServer = "C:\\Users\\Administrator\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe";
+	Connection conn;
+	
+	private Connection getConnection() throws Exception {
+		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		Connection conn = DriverManager.getConnection(jdbc, userName, passWord);
+		return conn;
+	}
+	
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
+		conn = getConnection();
 		ChromeOptions chromeOptions= new ChromeOptions();
-//		chromeOptions.setBinary("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe");
-		chromeOptions.setBinary("C:\\Users\\Administrator\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe");
+		chromeOptions.setBinary(chromeServer);
 		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\driver\\chromedriver.exe");
 		driver = new ChromeDriver(chromeOptions);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -49,13 +61,6 @@ public class TestBatDongSan {
 		String transtype = "transtype";
 		String bds = "bds";
 
-		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-//		String dbURL = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433";
-//		String dbURL = "jdbc:sqlserver://localhost/DBCRAWLER";
-//		String dbURL = localhost:1433;databaseName=Company
-//		Connection conn = DriverManager.getConnection(dbURL, "Dot_Crawler",
-//				"$serv1c3cr4wl3r%");
-		Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=DBCRAWLER", "Dot_Crawler", "$serv1c3cr4wl3r%");
 		String SPUrl = "EXEC [dbo].[Transtype_Sel] ?,?";
 		PreparedStatement ps = conn.prepareStatement(SPUrl);
 		ps.setEscapeProcessing(true);
@@ -67,8 +72,7 @@ public class TestBatDongSan {
 		while (rs.next()) {
 			int itranstype = Integer.parseInt(rs.getString("transtype"));
 			String iurl = rs.getString("url");
-			 System.out.println(itranstype + " : " + iurl);
-
+			System.out.println(itranstype + " : " + iurl);
 			getPage(itranstype, iurl);
 		}
 	}
@@ -107,63 +111,66 @@ public class TestBatDongSan {
 
 	// Get detail information
 	private int writeToDatabase(int transtype) throws Exception {
-		String title = getTitle();
-		float area = getArea();
-		String transDesc = getTransactionDescription();
-		String direction = getDirection();
-		String balcony = getBalcony();
-		int bedRoom = getBedRoom();
-		int toilet = getToilet();
-		String furniture = getFurniture();
-		String contactPerson = getContactPerson();
-		String phoneContact = getPhoneContact();
-		String email = getEmail();
-		String addressContact = getAddressContact();
-		Date importDate = null;
-		String transCode = getTransactionCode();
-		String url = getURL();		
-		Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=DBCRAWLER", "Dot_Crawler", "$serv1c3cr4wl3r%");
-		
-		try {
-			CallableStatement cs = conn.prepareCall("{call BDS_TransImport_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-			cs.setEscapeProcessing(true);
-			cs.setQueryTimeout(5);
+		String transCode = getTransactionCode(transtype);
+		if(transCode!=null) {
+			String title = getTitle();
+			float area = getArea();
+			String transDesc = getTransactionDescription();
+			String direction = getDirection();
+			String balcony = getBalcony();
+			int bedRoom = getBedRoom();
+			int toilet = getToilet();
+			String furniture = getFurniture();
+			String contactPerson = getContactPerson();
+			String phoneContact = getPhoneContact();
+			String email = getEmail();
+			String addressContact = getAddressContact();
+			Date importDate = null;
+			String url = getURL();		
 			
-			cs.setInt(1, transtype);
-			cs.setString(2, title);
-			cs.setString(3, getAddress());
-			
-			if(!getPrice().get(0).contains("Th")) {
-				cs.setFloat(4, Float.parseFloat(getPrice().get(0)));
-				cs.setString(5, getPrice().get(1));
-			} else {
-				cs.setFloat(4, 0);
-				cs.setString(5, null);
+			try {
+				CallableStatement cs = conn.prepareCall("{call BDS_TransImport_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+				cs.setEscapeProcessing(true);
+				cs.setQueryTimeout(5);
+				
+				cs.setInt(1, transtype);
+				cs.setString(2, title);
+				cs.setString(3, getAddress());
+				
+				if(!getPrice().get(0).contains("Th")) {
+					cs.setFloat(4, Float.parseFloat(getPrice().get(0)));
+					cs.setString(5, getPrice().get(1));
+				} else {
+					cs.setFloat(4, 0);
+					cs.setString(5, null);
+				}
+				
+				cs.setFloat(6, area);
+				cs.setString(7, transDesc);
+				cs.setString(8, direction);
+				cs.setString(9, balcony);
+				cs.setInt(10, bedRoom);
+				cs.setInt(11, toilet);
+				cs.setString(12, furniture);
+				cs.setString(13, contactPerson);
+				cs.setString(14, phoneContact);
+				cs.setString(15, email);
+				cs.setString(16, addressContact);
+				cs.setTimestamp(17, getTransactionDate());
+				cs.setDate(18, (java.sql.Date) importDate);
+				cs.setString(19, transCode);
+				cs.setString(20, url);
+				cs.registerOutParameter(21, java.sql.Types.INTEGER);
+				
+				cs.executeUpdate();
+				int iStop = Integer.parseInt(cs.getString(21));
+	
+				return iStop;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return 100;
 			}
-			
-			cs.setFloat(6, area);
-			cs.setString(7, transDesc);
-			cs.setString(8, direction);
-			cs.setString(9, balcony);
-			cs.setInt(10, bedRoom);
-			cs.setInt(11, toilet);
-			cs.setString(12, furniture);
-			cs.setString(13, contactPerson);
-			cs.setString(14, phoneContact);
-			cs.setString(15, email);
-			cs.setString(16, addressContact);
-			cs.setTimestamp(17, getTransactionDate());
-			cs.setDate(18, (java.sql.Date) importDate);
-			cs.setString(19, transCode);
-			cs.setString(20, url);
-			cs.registerOutParameter(21, java.sql.Types.INTEGER);
-			
-			cs.executeUpdate();
-			int iStop = Integer.parseInt(cs.getString(21));
-
-			return iStop;
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} else {
 			return 100;
 		}
 	}
@@ -249,11 +256,7 @@ public class TestBatDongSan {
 
 	// Getting Transaction Description
 	private String getTransactionDescription() {
-		String transactionDescription = driver
-				.findElement(
-						By.xpath("//div[contains(@class, 'pm-content')]/div[@class='pm-desc']"))
-				.getText();
-		// System.out.println(transactionDescription);
+		String transactionDescription = driver.findElement(By.xpath("//div[contains(@class, 'pm-content')]/div[@class='pm-desc']")).getText();
 		return transactionDescription;
 	}
 
@@ -290,37 +293,38 @@ public class TestBatDongSan {
 
 	// Getting Phone Contact
 	private String getPhoneContact() {
-		String phoneContact = driver
-				.findElement(
-						By.xpath("//div[@id='LeftMainContent__productDetail_contactMobile']/div[@class='right']"))
-				.getText();
-		// System.out.println(phoneContact);
+		String phoneContact = driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_contactMobile']/div[@class='right']")).getText();
 		return phoneContact;
 	}
 
 	// Getting Address Contact
 	private String getAddressContact() {
-		String addressContact = driver
-				.findElement(
-						By.xpath("(//div[@class='div-table']//div[@class='right'])[2]"))
-				.getText();
-		// System.out.println(addressContact);
+		String addressContact = driver.findElement(By.xpath("(//div[@class='div-table']//div[@class='right'])[2]")).getText();
 		return addressContact;
 	}
 
 	// Getting Transaction Code
-	private String getTransactionCode() {
-		String transCode = driver.findElement(
-				By.xpath("(//span[@class='normalblue']/parent::div)[1]/div"))
-				.getText();
-		// System.out.println(transCode);
-		return transCode;
+	private String getTransactionCode(int transtype) throws Exception {
+		String transCode = driver.findElement(By.xpath("(//span[@class='normalblue']/parent::div)[1]/div")).getText();
+		CallableStatement cs = conn.prepareCall("{call BDS_CheckTranscodeExists(?,?,?)}");
+		cs.setEscapeProcessing(true);
+		cs.setQueryTimeout(5);
+		cs.setInt(1, transtype);
+		cs.setString(2, transCode);
+		cs.registerOutParameter(3, java.sql.Types.BOOLEAN);
+		cs.executeUpdate();
+		Boolean iVerify = cs.getBoolean(3);
+		System.out.println(transCode);
+		System.out.println(iVerify);
+		if(iVerify)
+			return null;
+		else 
+			return transCode;
 	}
 
 	// Getting URL
 	private String getURL() {
 		String url = driver.getCurrentUrl();
-		// System.out.println(url);
 		return url;
 	}
 

@@ -231,6 +231,7 @@ public class TestBatDongSan {
 	// Getting city, district and address detail
 	private List<String> getAddress() {
 		String quan = null;
+		String removeQuan = null;
 		String thanhPho = null;
 		String chiTietDiaChi = null;
 		List<String> addresses = null;
@@ -241,11 +242,12 @@ public class TestBatDongSan {
 		String quanThanhPho = diaChiTren.replace(khuVuc, "").replace(diaChiLink, "");
 		List<String> toanBoDiaChiTren = Arrays.asList(quanThanhPho.split("- "));
 		quan = toanBoDiaChiTren.get(1).trim();
+		removeQuan = quan.replace("Quận", "");
 		thanhPho = toanBoDiaChiTren.get(2).trim();
 				
 		
 		String allAddress = driver.findElement(By.xpath("(//div[@class='table-detail']/div[2]/div[@class='right'])[1]")).getText();
-		chiTietDiaChi = allAddress.replaceAll(quan,"").replaceAll(thanhPho,"").replaceAll(", ,","").trim();
+		chiTietDiaChi = allAddress.replaceAll(quan,"").replaceAll(thanhPho,"").replaceAll(",, ,","").replaceAll(removeQuan,"").trim();
 		System.out.println(chiTietDiaChi);
 		addresses = Arrays.asList(thanhPho, quan, chiTietDiaChi) ;
 		System.out.println(addresses);

@@ -109,6 +109,7 @@ public class TestBatDongSan {
 								cs.setString(2, "bds");
 								cs.executeUpdate();
 								System.out.println("End reading !");
+								break;
 							} else {
 								Thread.sleep(5000);	
 							}

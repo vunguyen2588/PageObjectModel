@@ -77,12 +77,12 @@ public class TestBatDongSan {
 		List<WebElement> record;
 		int iStop = 0;
 		
-		for (int iUrl = 2311; iUrl <= 10000; iUrl++) {
+		for (int iUrl = 0; iUrl <= 10000; iUrl++) {
 			if(iStop > 0) {
 				break;
 			} else {
 				driver.get(url + "/p" + iUrl);
-				for (int i = 15; i < 20; i++) {
+				for (int i = 0; i < 20; i++) {
 					if(iStop > 0) {
 						break;
 					} else {

@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,51 +73,69 @@ public class TestBatDongSan {
 
 	// Getting page
 	private void getPage(int transtype, String url) throws Exception {
-		List<WebElement> record;
-		int iStop = 0;
-		
-		for (int iUrl = 0; iUrl <= 10000; iUrl++) {
-			if(iStop > 0) {
-				break;
-			} else {
-				driver.get(url + "/p" + iUrl);
-				for (int i = 0; i < 20; i++) {
-					if(iStop > 0) {
-						break;
-					} else {
-						List<WebElement> titleEles = driver.findElements(By.xpath("//div[@class='p-title']//a"));
-						if(titleEles.size()!=0) {
-							record = driver.findElements(By.xpath("//div[@class='p-title']//a"));
-							if(record.size() > 0) {
-								record.get(i).click();
-								new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
-								System.out.println(driver.getCurrentUrl());
-								iStop = writeToDatabase(transtype);
-								driver.navigate().back();
-								new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
-							} else {
-								iStop = 1;
-							}
+		int iStop;
+		try {
+			List<WebElement> record;
+			for (int iUrl = 0; iUrl <= 10000; iUrl++) {
+				iStop = 0;
+				if(iStop > 0) {
+					break;
+				} else {
+					System.out.println(url + "/p" + iUrl);
+					driver.get(url + "/p" + iUrl);
+					for (int i = 0; i < 20; i++) {
+						if(iStop > 0) {
+							break;
 						} else {
-							List<WebElement> notFoundEles = driver.findElements(By.xpath("//div[@id='LeftMainContent__productSearchResult_pnlNotFound']"));
-							if(notFoundEles.size()==1) {
-								CallableStatement cs = conn.prepareCall("{call BDS_TaskProcessUpd(?,?)}");
-								cs.setEscapeProcessing(true);
-								cs.setQueryTimeout(5);
-								cs.setInt(1, transtype);
-								cs.setString(2, "bds");
-								cs.executeUpdate();
-								System.out.println("End reading !");
-								iStop = 1;
+							List<WebElement> titleEles = driver.findElements(By.xpath("//div[@class='p-title']//a"));
+							if(titleEles.size()!=0) {
+								record = driver.findElements(By.xpath("//div[@class='p-title']//a"));
+								if(record.size() > 0) {
+									record.get(i).click();
+									new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+									System.out.println(driver.getCurrentUrl());
+									iStop = writeToDatabase(transtype);
+									System.out.println("=======" + iStop);
+									if(iStop==0) {
+										driver.navigate().back();
+										new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+									} else {
+										break;
+									}
+								} else {
+									iStop = 1;
+								}
 							} else {
-								Thread.sleep(5000);	
+								List<WebElement> notFoundEles = driver.findElements(By.xpath("//div[@id='LeftMainContent__productSearchResult_pnlNotFound']"));
+								if(notFoundEles.size()==1) {
+									CallableStatement cs = conn.prepareCall("{call BDS_TaskProcessUpd(?,?)}");
+									cs.setEscapeProcessing(true);
+									cs.setQueryTimeout(5);
+									cs.setInt(1, transtype);
+									cs.setString(2, "bds");
+									cs.executeUpdate();
+									System.out.println("End reading !");
+									iStop = 1;
+								} else {
+									Thread.sleep(5000);	
+								}
 							}
 						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			CallableStatement cs = conn.prepareCall("{call BDS_TaskProcessUpd(?,?)}");
+			cs.setEscapeProcessing(true);
+			cs.setQueryTimeout(5);
+			cs.setInt(1, transtype);
+			cs.setString(2, "bds");
+			cs.executeUpdate();
+			System.out.println("End reading !");
+			iStop = 1;
 		}
-
+		
 	}
 
 	// Get detail information
@@ -183,7 +200,7 @@ public class TestBatDongSan {
 				return 100;
 			}
 		} else {
-			return 0;
+			return 100;
 		}
 	}
 

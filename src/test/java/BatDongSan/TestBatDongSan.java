@@ -73,10 +73,13 @@ public class TestBatDongSan {
 
 	// Getting page
 	private void getPage(int transtype, String url) throws Exception {
-		int iStop;
+		int iStop = 0;
 		try {
 			List<WebElement> record;
 			for (int iUrl = 0; iUrl <= 10000; iUrl++) {
+				if(iStop==2) {
+					break;
+				}
 				iStop = 0;
 				if(iStop > 0) {
 					break;
@@ -115,7 +118,7 @@ public class TestBatDongSan {
 									cs.setString(2, "bds");
 									cs.executeUpdate();
 									System.out.println("End reading !");
-									iStop = 1;
+									iStop = 2;
 								} else {
 									Thread.sleep(5000);	
 								}

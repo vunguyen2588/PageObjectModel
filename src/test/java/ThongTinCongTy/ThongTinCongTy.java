@@ -1,31 +1,12 @@
 package ThongTinCongTy;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class ThongTinCongTy {
 	WebDriver driver;
@@ -41,7 +22,7 @@ public class ThongTinCongTy {
 //		conn = getConnection();
 		ChromeOptions chromeOptions= new ChromeOptions();
 		chromeOptions.setBinary(chromeLocal);
-		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\driver\\chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\driver\\chromedriver2.exe");
 		driver = new ChromeDriver(chromeOptions);
 //		System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + "\\driver\\geckodriver.exe");
 //		 WebDriver driver = new FirefoxDriver();
@@ -56,16 +37,20 @@ public class ThongTinCongTy {
 //	@Test
 	public void getThongTinCongTy() throws Exception {
 		for (int iPage=1; iPage<10000; iPage++) {
-			driver.get("https://ho-chi-minh.congtydoanhnghiep.com/trang-" + iPage);
+			String hochiminhDoanhNghiep = "https://ho-chi-minh.congtydoanhnghiep.com/trang-";
+			String quangngaiDoanhNghiep = "https://quang-ngai.congtydoanhnghiep.com/trang-";
+			
+			driver.get(quangngaiDoanhNghiep + iPage);
 			for(int i = 0; i < 20; i ++) {
 				driver.findElements(By.xpath("//article[@class='even']/h2/a|//article[@class='odd']/h2/a")).get(i).click();
-				getThongTinChiTietCongTy();
+				getThongTinChiTietCongTy(i);
 				driver.navigate().back();
 			}
 		}
 	}
 	
-	private void getThongTinChiTietCongTy() {
+	private void getThongTinChiTietCongTy(int iPage) {
+		System.out.println(iPage + " ============ " + driver.getCurrentUrl());
 		System.out.println("TEN CONG TY: " + driver.findElement(By.xpath("//th[text()='Tên công ty: ']/following-sibling::td")).getText());
 		List<WebElement> giamdoc = driver.findElements(By.xpath("//th[text()='Giám đốc:']/following-sibling::td"));
 		if(giamdoc.size()==1 ) {
@@ -73,22 +58,29 @@ public class ThongTinCongTy {
 		}
 		System.out.println("CHU SO HUU: " + driver.findElement(By.xpath("//th[text()='Chủ sở hữu:']/following-sibling::td")).getText());
 		System.out.println("MA SO THUE: " + driver.findElement(By.xpath("//th[text()='Mã số thuế: ']/following-sibling::td")).getText());
+		
 		System.out.println("==========");
 		System.out.println("DIA CHI: " + driver.findElement(By.xpath("//th[text()='Địa Chỉ:']/following-sibling::td")).getText());
+		List<WebElement> dienthoais = driver.findElements(By.xpath("//th[text()='Điện thoại:']/following-sibling::td"));
+		if(dienthoais.size()==1 ) {
+			System.out.println("DIEN THOAI: " + driver.findElement(By.xpath("//th[text()='Điện thoại:']/following-sibling::td")).getText());
+		}
+		
 		System.out.println("==========");
 		System.out.println("TINH TRANG HOAT DONG: " + driver.findElement(By.xpath("//th[text()='Tình trạng hoạt động: ']/following-sibling::td")).getText());
 		System.out.println("NOI DANG KY: " + driver.findElement(By.xpath("//th[text()='Nơi đăng ký quản lý:']/following-sibling::td")).getText());
 		System.out.println("NGAY CAP GIAY PHEP: " + driver.findElement(By.xpath("//th[text()='Ngày cấp giấy phép:']/following-sibling::td")).getText());
+		
 		System.out.println("==========");
 		List<WebElement> nganhnghechinh = driver.findElements(By.xpath("//th[text()='Ngành nghề kinh doanh:']/following-sibling::td"));
 		if(nganhnghechinh.size()==1 ) {
-//			System.out.println("NGHANH NGHE CHINH: " + nganhnghechinh.get(0).getText());
 			List<WebElement> nganhNghes = driver.findElements(By.xpath("//th[text()='Ngành nghề kinh doanh:']/following-sibling::td//li"));
 			for(int iNganh=0; iNganh<nganhNghes.size(); iNganh++) {
 				System.out.println("=====" + nganhNghes.get(iNganh).getText());
 			}
 		}
-		System.out.println("===================================================== END");
+		
+		System.out.println("END ===================================================== END");
 	}
 	
 	

@@ -27,7 +27,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class TestBatDongSan {
 	WebDriver driver;
-	String jdbc = "jdbc:sqlserver://103.101.163.224:1433;databaseName=DBCRAWLER";
+	String jdbc = "jdbc:sqlserver://103.101.163.224:1433;databaseName=bodb_Source";
 	String userName = "Dot_Crawler";
 	String passWord = "$serv1c3cr4wl3r%";
 	String chromeLocal = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";

@@ -349,7 +349,7 @@ public class TestBatDongSan {
 	// Getting Transaction Code
 	private String getTransactionCode(int transtype) throws Exception {
 		String transactionCodeXpath = "(//span[@class='normalblue']/parent::div)[1]/div";
-		WebDriverWait wait = new WebDriverWait(driver, 30);
+		WebDriverWait wait = new WebDriverWait(driver, 180);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(transactionCodeXpath)));
 		String transCode = driver.findElement(By.xpath(transactionCodeXpath)).getText();
 		CallableStatement cs = conn.prepareCall("{call BDS_CheckTranscodeExists(?,?,?)}");

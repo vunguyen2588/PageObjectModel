@@ -348,24 +348,38 @@ public class TestBatDongSan {
 
 	// Getting Transaction Code
 	private String getTransactionCode(int transtype) throws Exception {
-		String transactionCodeXpath = "(//span[@class='normalblue']/parent::div)[1]/div";
-		WebDriverWait wait = new WebDriverWait(driver, 180);
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(transactionCodeXpath)));
-		String transCode = driver.findElement(By.xpath(transactionCodeXpath)).getText();
-		CallableStatement cs = conn.prepareCall("{call BDS_CheckTranscodeExists(?,?,?)}");
-		cs.setEscapeProcessing(true);
-		cs.setQueryTimeout(5);
-		cs.setInt(1, transtype);
-		cs.setString(2, transCode);
-		cs.registerOutParameter(3, java.sql.Types.BOOLEAN);
-		cs.executeUpdate();
-		Boolean iVerify = cs.getBoolean(3);
-		System.out.println(transCode);
-		System.out.println(iVerify);
-		if(iVerify)
+		try {
+			String transactionCodeXpath = "(//span[@class='normalblue']/parent::div)[1]/div";
+			WebDriverWait wait = new WebDriverWait(driver, 180);
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(transactionCodeXpath)));
+			String transCode = driver.findElement(By.xpath(transactionCodeXpath)).getText();
+			CallableStatement cs = conn.prepareCall("{call BDS_CheckTranscodeExists(?,?,?)}");
+			cs.setEscapeProcessing(true);
+			cs.setQueryTimeout(5);
+			cs.setInt(1, transtype);
+			cs.setString(2, transCode);
+			cs.registerOutParameter(3, java.sql.Types.BOOLEAN);
+			cs.executeUpdate();
+			Boolean iVerify = cs.getBoolean(3);
+			System.out.println(transCode);
+			System.out.println(iVerify);
+			if(iVerify)
+				return null;
+			else 
+				return transCode;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			System.out.println("======= Waiting too long !");
+			CallableStatement cs = conn.prepareCall("{call BDS_TaskProcessUpd(?,?)}");
+			cs.setEscapeProcessing(true);
+			cs.setQueryTimeout(5);
+			cs.setInt(1, transtype);
+			cs.setString(2, "bds");
+			cs.executeUpdate();
+			System.out.println("End reading !");
+//			iStop = 1;
 			return null;
-		else 
-			return transCode;
+		}
 	}
 
 	// Getting URL

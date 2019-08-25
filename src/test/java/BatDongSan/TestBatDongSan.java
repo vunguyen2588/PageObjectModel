@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class TestBatDongSan {
@@ -346,7 +348,10 @@ public class TestBatDongSan {
 
 	// Getting Transaction Code
 	private String getTransactionCode(int transtype) throws Exception {
-		String transCode = driver.findElement(By.xpath("(//span[@class='normalblue']/parent::div)[1]/div")).getText();
+		String transactionCodeXpath = "(//span[@class='normalblue']/parent::div)[1]/div";
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(transactionCodeXpath)));
+		String transCode = driver.findElement(By.xpath(transactionCodeXpath)).getText();
 		CallableStatement cs = conn.prepareCall("{call BDS_CheckTranscodeExists(?,?,?)}");
 		cs.setEscapeProcessing(true);
 		cs.setQueryTimeout(5);

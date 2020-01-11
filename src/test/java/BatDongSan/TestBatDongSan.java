@@ -336,7 +336,8 @@ public class TestBatDongSan {
 
 	// Getting Phone Contact
 	private String getPhoneContact() {
-		String phoneContact = driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_contactMobile']/div[@class='right']")).getText();
+//		String phoneContact = driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_contactMobile']/div[@class='right']")).getText();
+		String phoneContact = driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_contactMobile']//span[contains(@class, 'border-phone')]")).getAttribute("raw");
 		return phoneContact;
 	}
 

@@ -328,8 +328,8 @@ public class TestBatDongSan {
 	// Getting Contact Person
 	private String getContactPerson() {
 		String contactPerson = null;
-		if(driver.findElements(By.xpath("//div[@id='LeftMainContent__productDetail_contactName']/div[@class='right']")).size()==1) {
-			contactPerson = driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_contactName']/div[@class='right']")).getText();
+		if(driver.findElements(By.xpath("//div[contains(text(),'Tên liên lạc')]/following-sibling::div")).size()>0) {
+			contactPerson = driver.findElement(By.xpath("//div[contains(text(),'Tên liên lạc')]/following-sibling::div")).getText();
 		}
 		return contactPerson;
 	}

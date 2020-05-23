@@ -1,31 +1,21 @@
 package BatDongSan;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class TestBatDongSan {
 	WebDriver driver;
@@ -43,12 +33,13 @@ public class TestBatDongSan {
 		chromeOptions.setBinary(chromeServer);
 		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\driver\\chromedriver.exe");
 		driver = new ChromeDriver(chromeOptions);
+		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 	}
 
 	@After
 	public void tearDown() {
-		driver.quit();
+//		driver.quit();
 	}
 
 	// ==============================================================================================================================	
@@ -299,7 +290,22 @@ public class TestBatDongSan {
 
 	// Getting Transaction Description
 	private String getTransactionDescription() {
-		String transactionDescription = driver.findElement(By.xpath("//div[contains(@class, 'pm-content')]/div[@class='pm-desc']")).getText();
+		List<WebElement> eles = null;
+
+		if (driver.findElements(By.xpath("//div[@class='pm-desc']//span[contains(@class, 'hidden-phone hidden-mobile detail')]")).size() > 0) {
+			eles = driver.findElements(By.xpath("//div[@class='pm-desc']//span[contains(@class, 'hidden-phone hidden-mobile detail')]"));
+			for (int i=0; i < eles.size(); i++) {
+				eles.get(i).click();
+			}
+		}
+//		System.out.println("=====================" + eles.size());
+//		if(iHiddenMobile > 0) {
+//			for (int i=0; i < iHiddenMobile; i++) {
+//				driver.findElements(By.xpath("//span[@class='hidden-phone hidden-mobile detail']")).get(i+1).click();
+//			}
+//		}
+		String transactionDescription = driver.findElement(By.xpath("//div[contains(@class, 'pm-content')]/div[@class='pm-desc']")).getAttribute("innerText");
+//		System.out.println("transactionDescription = " + transactionDescription);
 		return transactionDescription;
 	}
 

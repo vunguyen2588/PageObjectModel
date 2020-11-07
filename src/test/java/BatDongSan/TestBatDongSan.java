@@ -81,7 +81,7 @@ public class TestBatDongSan {
 		while (rs.next()) {
 			int itranstype = Integer.parseInt(rs.getString("transtype"));
 			String iurl = rs.getString("url");
-			System.out.println(itranstype + " : " + iurl);
+//			System.out.println(itranstype + " : " + iurl);
 			getPage(itranstype, iurl);
 		}
 	}
@@ -271,7 +271,7 @@ public class TestBatDongSan {
 	private List<String> getPrice() {
 		String price = driver.findElement(By.xpath(strPrice)).getText().trim();
 		List<String> priceList = Arrays.asList(price.split(" "));
-		System.out.println("priceList = " + priceList);
+//		System.out.println("priceList = " + priceList);
 		return priceList;
 	}
 	
@@ -292,7 +292,7 @@ public class TestBatDongSan {
 		String email;
 		try {
 			email = driver.findElement(By.xpath(emailXpath)).getAttribute("data-email");
-			System.out.println(email);
+//			System.out.println(email);
 		} catch (NoSuchElementException e) {
 			email = null;
 		}
@@ -396,7 +396,7 @@ public class TestBatDongSan {
 			cs.executeUpdate();
 			Boolean iVerify = cs.getBoolean(3);
 			System.out.println(transCode);
-			System.out.println(iVerify);
+//			System.out.println(iVerify);
 			if(iVerify)
 				return null;
 			else 

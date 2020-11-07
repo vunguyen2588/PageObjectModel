@@ -9,8 +9,5 @@
         <module name="Guru99" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Guru99" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

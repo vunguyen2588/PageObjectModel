@@ -25,7 +25,29 @@ public class TestBatDongSan {
 	String chromeLocal = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
 	String chromeServer = "C:\\Users\\Administrator\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe";
 	Connection conn;
-	
+
+	private String strTitleList = "//h3[@class='product-title']//a";
+	//	private String strTransactionCode = "(//span[@class='normalblue']/parent::div)[1]/div";
+	private String strTransactionCode = "//span[@class='sp1' and (.)='Mã tin:']/following-sibling::span[@class='sp3']";
+	//private String strTitle = "//div[@class='pm-title']/h1";
+	private String strTitle = "//h1[@class='tile-product']";
+	//	private String strTransactionDescription = "//div[contains(@class, 'pm-content')]/div[@class='pm-desc']";
+	private String strTransactionDescription = "//div[@class='des-product']";
+	//	private String strHiddenMobileDes = "//div[@class='pm-desc']//span[contains(@class, 'hidden-phone hidden-mobile detail')]";
+	private String strHiddenMobileDes = "//div[@class='des-product']//span[contains(@class, 'hidden-phone hidden-mobile des')]";
+	//	private String strPhoneContact = "//div[@id='LeftMainContent__productDetail_contactMobile']//span[contains(@class, 'border-phone')]";
+	private String strPhoneContact = "//div[contains(@class,'phone')]/span[contains(@class,'phoneEvent')]";
+	//	private String strDiaChi = "(//div[@class='div-table']//div[@class='right'])[2]";
+	private String strDiaChi = "//span[text()='Địa chỉ:']/following-sibling::span";
+	//	private String strPrice = "(//span[contains(@class, 'gia-title')]/strong)[1]";
+	private String strPrice = "//span[text()='Mức giá:']/following-sibling::span";
+	//	private String strTransactionDate = "(//span[@class='normalblue']/parent::div)[3]";
+	private String strTransactionDate = "//span[text()='Ngày đăng:']/following-sibling::span";
+	//	private String contactPersonXpath = "//div[contains(text(),'Tên liên lạc')]/following-sibling::div";
+	private String contactPersonXpath = "//div[@class='user']//div[@class='name']";
+	//	private String emailXpath = "//div[@id='contactEmail']//a[@rel='nofollow']";
+	private String emailXpath = "//a[@id='email']";
+
 	@Before
 	public void setup() throws Exception {
 		conn = getConnection();
@@ -83,9 +105,9 @@ public class TestBatDongSan {
 						if(iStop > 0) {
 							break;
 						} else {
-							List<WebElement> titleEles = driver.findElements(By.xpath("//div[@class='p-title']//a"));
+							List<WebElement> titleEles = driver.findElements(By.xpath(strTitleList));
 							if(titleEles.size()!=0) {
-								record = driver.findElements(By.xpath("//div[@class='p-title']//a"));
+								record = driver.findElements(By.xpath(strTitleList));
 								if(record.size() > 0) {
 									record.get(i).click();
 									new WebDriverWait(driver, 50).until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
@@ -110,7 +132,7 @@ public class TestBatDongSan {
 									cs.setInt(1, transtype);
 									cs.setString(2, "bds");
 									cs.executeUpdate();
-									System.out.println("End reading !");
+									System.out.println("!End reading !");
 									iStop = 2;
 								} else {
 									Thread.sleep(5000);	
@@ -121,6 +143,7 @@ public class TestBatDongSan {
 				}
 			}
 		} catch (Exception e) {
+			System.out.println("e.getMessage()");
 			System.out.println(e.getMessage());
 			CallableStatement cs = conn.prepareCall("{call BDS_TaskProcessUpd(?,?)}");
 			cs.setEscapeProcessing(true);
@@ -160,8 +183,9 @@ public class TestBatDongSan {
 				
 				cs.setInt(1, transtype);
 				cs.setString(2, title);
-				cs.setString(3, getAddress());
-				
+//				cs.setString(3, getAddress());
+				cs.setString(3, getAddressContact());
+
 				if(!getPrice().get(0).contains("Th")) {
 					cs.setFloat(4, Float.parseFloat(getPrice().get(0)));
 					cs.setString(5, getPrice().get(1));
@@ -192,6 +216,7 @@ public class TestBatDongSan {
 	
 				return iStop;
 			} catch (SQLException e) {
+				System.out.println("Test");
 				e.printStackTrace();
 				return 100;
 			}
@@ -244,14 +269,15 @@ public class TestBatDongSan {
 	
 	//	Getting price
 	private List<String> getPrice() {
-		String price = driver.findElement(By.xpath("(//span[contains(@class, 'gia-title')]/strong)[1]")).getText().trim();
+		String price = driver.findElement(By.xpath(strPrice)).getText().trim();
 		List<String> priceList = Arrays.asList(price.split(" "));
+		System.out.println("priceList = " + priceList);
 		return priceList;
 	}
 	
 	// Getting title
 	private String getTitle() throws Exception {
-		String title = driver.findElement(By.xpath("//div[@class='pm-title']/h1")).getText();
+		String title = driver.findElement(By.xpath(strTitle)).getText();
 		return title;
 	}
 
@@ -265,7 +291,8 @@ public class TestBatDongSan {
 	private String getEmail() {
 		String email;
 		try {
-			email = driver.findElement(By.xpath("//div[@id='contactEmail']//a[@rel='nofollow']")).getText();
+			email = driver.findElement(By.xpath(emailXpath)).getAttribute("data-email");
+			System.out.println(email);
 		} catch (NoSuchElementException e) {
 			email = null;
 		}
@@ -292,8 +319,8 @@ public class TestBatDongSan {
 	private String getTransactionDescription() {
 		List<WebElement> eles = null;
 
-		if (driver.findElements(By.xpath("//div[@class='pm-desc']//span[contains(@class, 'hidden-phone hidden-mobile detail')]")).size() > 0) {
-			eles = driver.findElements(By.xpath("//div[@class='pm-desc']//span[contains(@class, 'hidden-phone hidden-mobile detail')]"));
+		if (driver.findElements(By.xpath(strHiddenMobileDes)).size() > 0) {
+			eles = driver.findElements(By.xpath(strHiddenMobileDes));
 			for (int i=0; i < eles.size(); i++) {
 				eles.get(i).click();
 			}
@@ -304,7 +331,7 @@ public class TestBatDongSan {
 //				driver.findElements(By.xpath("//span[@class='hidden-phone hidden-mobile detail']")).get(i+1).click();
 //			}
 //		}
-		String transactionDescription = driver.findElement(By.xpath("//div[contains(@class, 'pm-content')]/div[@class='pm-desc']")).getAttribute("innerText");
+		String transactionDescription = driver.findElement(By.xpath(strTransactionDescription)).getAttribute("innerText");
 //		System.out.println("transactionDescription = " + transactionDescription);
 		return transactionDescription;
 	}
@@ -334,8 +361,8 @@ public class TestBatDongSan {
 	// Getting Contact Person
 	private String getContactPerson() {
 		String contactPerson = null;
-		if(driver.findElements(By.xpath("//div[contains(text(),'Tên liên lạc')]/following-sibling::div")).size()>0) {
-			contactPerson = driver.findElement(By.xpath("//div[contains(text(),'Tên liên lạc')]/following-sibling::div")).getText();
+		if(driver.findElements(By.xpath(contactPersonXpath)).size()>0) {
+			contactPerson = driver.findElement(By.xpath(contactPersonXpath)).getText();
 		}
 		return contactPerson;
 	}
@@ -343,20 +370,20 @@ public class TestBatDongSan {
 	// Getting Phone Contact
 	private String getPhoneContact() {
 //		String phoneContact = driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_contactMobile']/div[@class='right']")).getText();
-		String phoneContact = driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_contactMobile']//span[contains(@class, 'border-phone')]")).getAttribute("raw");
+		String phoneContact = driver.findElement(By.xpath(strPhoneContact)).getAttribute("raw");
 		return phoneContact;
 	}
 
 	// Getting Address Contact
 	private String getAddressContact() {
-		String addressContact = driver.findElement(By.xpath("(//div[@class='div-table']//div[@class='right'])[2]")).getText();
+		String addressContact = driver.findElement(By.xpath(strDiaChi)).getText();
 		return addressContact;
 	}
 
 	// Getting Transaction Code
 	private String getTransactionCode(int transtype) throws Exception {
 		try {
-			String transactionCodeXpath = "(//span[@class='normalblue']/parent::div)[1]/div";
+			String transactionCodeXpath = strTransactionCode;
 			WebDriverWait wait = new WebDriverWait(driver, 180);
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(transactionCodeXpath)));
 			String transCode = driver.findElement(By.xpath(transactionCodeXpath)).getText();
@@ -397,8 +424,8 @@ public class TestBatDongSan {
 
 	// Getting Transaction Date
 	private Timestamp getTransactionDate() throws Exception {
-		String transDate = driver.findElement(By.xpath("(//span[@class='normalblue']/parent::div)[3]")).getText().substring(11);
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+		String transDate = driver.findElement(By.xpath(strTransactionDate)).getText();
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		Timestamp ts = new Timestamp(((java.util.Date)df.parse(transDate)).getTime());
 		return ts;
 	}

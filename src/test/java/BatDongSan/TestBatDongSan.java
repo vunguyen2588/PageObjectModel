@@ -53,6 +53,8 @@ public class TestBatDongSan {
 	private String toiletXpath = "//span[text()='Số toilet:']/following-sibling::span";
 	//	private String furnitureXpath = "//div[@id='LeftMainContent__productDetail_interior']/div[2]";
 	private String furnitureXpath = "//span[text()='Nội thất:']/following-sibling::span";
+	//	private String dienTichXpath = "//span[@class='gia-title']/strong";
+	private String dienTichXpath = "//span[text()='Diện tích:']/following-sibling::span";
 
 	@Before
 	public void setup() throws Exception {
@@ -310,7 +312,7 @@ public class TestBatDongSan {
 	private float getArea() {
 		float area;
 		try {
-			String strArea = driver.findElement(By.xpath("//span[@class='gia-title']/strong")).getText();
+			String strArea = driver.findElement(By.xpath(dienTichXpath)).getText();
 			if(strArea.contains("Kh")) {
 				area = -1;
 			} else {

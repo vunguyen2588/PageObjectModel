@@ -47,6 +47,12 @@ public class TestBatDongSan {
 	private String contactPersonXpath = "//div[@class='user']//div[@class='name']";
 	//	private String emailXpath = "//div[@id='contactEmail']//a[@rel='nofollow']";
 	private String emailXpath = "//a[@id='email']";
+	// 	private String bedroomXpath = "//div[@id='LeftMainContent__productDetail_roomNumber']/div[2]";
+	private String bedroomXpath = "//span[text()='Số phòng ngủ:']/following-sibling::span";
+	//	private String toiletXpath = "//div[@id='LeftMainContent__productDetail_toilet']/div[2]";
+	private String toiletXpath = "//span[text()='Số toilet:']/following-sibling::span";
+	//	private String furnitureXpath = "//div[@id='LeftMainContent__productDetail_interior']/div[2]";
+	private String furnitureXpath = "//span[text()='Nội thất:']/following-sibling::span";
 
 	@Before
 	public void setup() throws Exception {
@@ -260,7 +266,8 @@ public class TestBatDongSan {
 	private String getFurniture() {
 		String funiture;
 		try {
-			funiture = driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_interior']/div[2]")).getText();
+			funiture = driver.findElement(By.xpath(furnitureXpath)).getText();
+			System.out.println("funiture = " + funiture);
 		} catch (NoSuchElementException e) {
 			funiture = null;
 		}
@@ -340,7 +347,8 @@ public class TestBatDongSan {
 	private int getBedRoom() {
 		int bedRoom;
 		try {
-			bedRoom = Integer.parseInt(driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_roomNumber']/div[2]")).getText().replaceAll("[^0-9]", ""));
+			bedRoom = Integer.parseInt(driver.findElement(By.xpath(bedroomXpath)).getText().replaceAll("[^0-9]", ""));
+			System.out.println("Bedroom ============= " + bedRoom);
 		} catch (NoSuchElementException e) {
 			bedRoom = 0;
 		}
@@ -351,7 +359,8 @@ public class TestBatDongSan {
 	private int getToilet() {
 		int toilet;
 		try {
-			toilet = Integer.parseInt(driver.findElement(By.xpath("//div[@id='LeftMainContent__productDetail_toilet']/div[2]")).getText().replaceAll("[^0-9]", ""));
+			toilet = Integer.parseInt(driver.findElement(By.xpath(toiletXpath)).getText().replaceAll("[^0-9]", ""));
+			System.out.println("========" + toilet);
 		} catch (NoSuchElementException e) {
 			toilet = 0;
 		}

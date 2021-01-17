@@ -110,6 +110,7 @@ public class TestBatDongSan {
 
 								for (int iReadUrl = 0; iReadUrl < hrefs.size(); iReadUrl++) {
 									driver.get(hrefs.get(iReadUrl));
+									System.out.println(hrefs.get(iReadUrl));
 									iStop = writeToDatabase(transtype);
 									System.out.println("iStop == " + iStop);
 									if(iStop!=0) {

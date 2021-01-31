@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TestBatDongSan {
 	WebDriver driver;
-	String jdbc = "jdbc:sqlserver://103.101.163.224:1433;databaseName=bodb_Source";
+	String jdbc = "jdbc:sqlserver://103.159.50.96:1433;databaseName=bodb_Source";
 	String userName = "Dot_Crawler";
 	String passWord = "$serv1c3cr4wl3r%";
 	String chromeLocal = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";

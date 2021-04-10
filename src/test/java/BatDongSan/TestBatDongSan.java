@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -78,15 +79,16 @@ public class TestBatDongSan {
 		while (rs.next()) {
 			int itranstype = Integer.parseInt(rs.getString("transtype"));
 			String iurl = rs.getString("url");
-			getPage(itranstype, iurl);
+			int iPageNo = Integer.parseInt(rs.getString("PageNo"));
+			getPage(itranstype, iurl, iPageNo);
 		}
 	}
 
 	// Getting page
-	private void getPage(int transtype, String url) throws Exception {
+	private void getPage(int transtype, String url, int pageNo) throws Exception {
 		int iStop = 0;
 		try {
-			for (int iUrl = 0; iUrl <= 10000; iUrl++) {
+			for (int iUrl = pageNo; iUrl <= 50000; iUrl++) {
 				if(iStop==2) {
 					break;
 				}

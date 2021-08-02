@@ -16,3 +16,4 @@
 
 4. 	Some points we need to improve for this project:
 	- We need to verify the right data to input to the Guru system
+        - Redd: RrF16Kf7X4JKfJDtvGRQXafEJQLK9hjUaC
